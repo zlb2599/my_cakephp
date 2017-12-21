@@ -128,47 +128,4 @@ class AppShell extends Shell {
         return $str; //返回字符串
     }
 
-    /**
-     * 计算课次单价
-     * ------------------------------------------------------------
-     * @access private
-     * ------------------------------------------------------------
-     * @param  int    $length 长度
-     * @param  string $type   类型
-     * @return string
-     * ------------------------------------------------------------
-     * @author wangjunjie <wangjunjie@longxiao.com>
-     * ------------------------------------------------------------
-     * @date 2017-01-22 13:51
-     * ------------------------------------------------------------
-     */
-    protected function getCourseUnitPrices($amount, $num, $start = 1){
-        $avg   = $amount / $num; //平均值
-        $digit = ($avg <= 0.01 ? 3 : 2); //小数位
-        $step  = "0." . str_repeat(0, $digit - 1) . '1'; //步长
-        $avg   = round($avg, $digit); //平均值处理
-        $tmp_data = array(); //临时数据结果集
-        $tmp_sum  = $avg * $num; //临时金额总和
-        for($i=1; $i<=$num; $i++){
-            $tmp_data[$i] = $avg;
-        }
-        if ($tmp_sum < $amount) {
-            for($i=1; $i<=$num; $i++){
-                if ((string)array_sum($tmp_data) == (string)$amount) { break; }
-                $tmp_data[$i] += (float)$step;
-            }
-        } else {
-            for($i=$num; $i>1; $i--){
-                if ((string)array_sum($tmp_data) == (string)$amount) { break; }
-                $tmp_data[$i] -= (float)$step;
-            }
-        }
-        $data = array();
-        foreach ($tmp_data as $key => $value) {
-            if ($key >= $start) {
-                $data[$key] = sprintf("%.{$digit}f", $value);
-            }
-        }
-        return $data;
-    }
 }
