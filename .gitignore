@@ -2,3 +2,4 @@
 .github
 logs
 tmp
+/app/jpush.log
