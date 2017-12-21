@@ -1,16 +1,12 @@
 <?php
 /**
  * Test App Comment Model
- *
  * PHP 5
- *
  * CakePHP :  Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
- *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakefoundation.org/projects/info/cakephp CakePHP Project
  * @package       Cake.Test.TestApp.Plugin.TestPlugin.Model
@@ -23,22 +19,22 @@
 
 /**
  * Class TestPluginAuthors
- *
  * @package       Cake.Test.TestApp.Plugin.TestPlugin.Model
  */
-class TestPluginAuthors extends TestPluginAppModel {
+class TestPluginAuthors extends TestPluginAppModel
+{
 
-	public $useTable = 'authors';
+    public $useTable = 'authors';
 
-	public $name = 'TestPluginAuthors';
+    public $name = 'TestPluginAuthors';
 
-	public $validate = array(
-		'field' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty',
-				'message' => 'I can haz plugin model validation message',
-			),
-		),
-	);
+    public $validate = array(
+        'field' => array(
+            'notEmpty' => array(
+                'rule'    => 'notEmpty',
+                'message' => 'I can haz plugin model validation message',
+            ),
+        ),
+    );
 
 }

@@ -39,7 +39,7 @@ class TimedTaskHomeworkAnswerPushShell extends AppShell
 
         /** 获取还有15分钟就要结束的全部作业 */
         $homework_list = $homework_model->getHomeworkAnswered();
-        if(empty($homework_list)) return;
+        if (empty($homework_list)) return;
         foreach ($homework_list as $key => $value) {
             $push_info = [
                 'title'          => '作业通知',//推送标题
@@ -50,7 +50,7 @@ class TimedTaskHomeworkAnswerPushShell extends AppShell
                 //极光消息
                 'extras_jiguang' => ['homework_id' => $value['id'], 'push_type' => '4'],
                 //数据库存储
-                'extras'         => json_encode(['homework_id' => $value['id'], 'push_type' => '4'] ),
+                'extras'         => json_encode(['homework_id' => $value['id'], 'push_type' => '4']),
                 //'merchant_id' => $merchant_id,//推送标题
             ];
             $this->messagePushRecord($push_info);
@@ -104,6 +104,18 @@ class TimedTaskHomeworkAnswerPushShell extends AppShell
     }
 
     //添加推送记录
+
+    private function jgset()
+    {
+        //获取机构极光配置
+        $model          = new jiPushConfig();
+        $jia_app_key    = $model->jiguangPushConfig();
+        $config         = $jia_app_key['zsgj']['aixiao'];
+        $config['date'] = date("Y-m-d");
+
+        return $config;
+    }
+
     private function addPushMessagelog($data)
     {
         $key_sql    = '';
@@ -151,6 +163,8 @@ class TimedTaskHomeworkAnswerPushShell extends AppShell
 
     }
 
+    //获取机构极光配置
+
     /**
      * 已结束课次
      * @return array|mixed
@@ -159,7 +173,7 @@ class TimedTaskHomeworkAnswerPushShell extends AppShell
     private function getOpenLesson()
     {
 
-        $date      = date("Y-m-d");
+        $date = date("Y-m-d");
 
         $field = " id,lesson_num,teacher_id,goods_id ";
 
@@ -179,17 +193,5 @@ class TimedTaskHomeworkAnswerPushShell extends AppShell
 
         return $lesson;
 
-    }
-
-    //获取机构极光配置
-    private function jgset()
-    {
-        //获取机构极光配置
-        $model          = new jiPushConfig();
-        $jia_app_key    = $model->jiguangPushConfig();
-        $config         = $jia_app_key['zsgj']['aixiao'];
-        $config['date'] = date("Y-m-d");
-
-        return $config;
     }
 }

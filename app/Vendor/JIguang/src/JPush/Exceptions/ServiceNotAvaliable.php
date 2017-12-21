@@ -1,25 +1,32 @@
 <?php
+
 namespace JPush\Exceptions;
 
-class ServiceNotAvaliable extends JPushException {
+class ServiceNotAvaliable extends JPushException
+{
 
     private $code;
     private $headers;
 
-    function __construct($response){
+    function __construct($response)
+    {
         $this->http_code = $response['http_code'];
-        $this->headers = $response['headers'];
-        $this->message = $response['body'];
+        $this->headers   = $response['headers'];
+        $this->message   = $response['body'];
     }
 
-    function __toString() {
-        return "\n" . __CLASS__ . " -- [{$this->code}]: {$this->message} \n";
+    function __toString()
+    {
+        return "\n".__CLASS__." -- [{$this->code}]: {$this->message} \n";
     }
 
-    public function getHttpCode() {
+    public function getHttpCode()
+    {
         return $this->http_code;
     }
-    public function getHeaders() {
+
+    public function getHeaders()
+    {
         return $this->headers;
     }
 }

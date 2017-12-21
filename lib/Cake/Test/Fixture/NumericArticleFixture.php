@@ -1,16 +1,12 @@
 <?php
 /**
  * Short description for file.
- *
  * PHP 5
- *
  * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
- *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Fixture
@@ -20,30 +16,28 @@
 
 /**
  * Class NumericArticleFixture
- *
  * @package       Cake.Test.Fixture
  */
-class NumericArticleFixture extends CakeTestFixture {
+class NumericArticleFixture extends CakeTestFixture
+{
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'title' => array('type' => 'string', 'null' => false),
-		'created' => 'datetime',
-		'updated' => 'datetime'
-	);
+    /**
+     * fields property
+     * @var array
+     */
+    public $fields = array(
+        'id'      => array('type' => 'integer', 'key' => 'primary'),
+        'title'   => array('type' => 'string', 'null' => false),
+        'created' => 'datetime',
+        'updated' => 'datetime'
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('title' => 'First Article', 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
-		array('title' => '12345abcde', 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
-	);
+    /**
+     * records property
+     * @var array
+     */
+    public $records = array(
+        array('title' => 'First Article', 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
+        array('title' => '12345abcde', 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
+    );
 }

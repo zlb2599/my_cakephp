@@ -1,19 +1,13 @@
 <?php
+
 namespace JPush\Tests;
 
-class ReportPayloadTest extends \PHPUnit_Framework_TestCase {
+class ReportPayloadTest extends \PHPUnit_Framework_TestCase
+{
 
-    protected function setUp() {
-        global $client;
-        $this->payload = $client->push()
-                                ->setPlatform('all')
-                                ->addAllAudience()
-                                ->setNotificationAlert('Hello JPush');
-        $this->reporter = $client->report();
-    }
-
-    public function testPusher0() {
-        $payload = $this->payload;
+    public function testPusher0()
+    {
+        $payload  = $this->payload;
         $response = $payload->send();
 
         $this->assertEquals('200', $response['http_code']);
@@ -23,13 +17,17 @@ class ReportPayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey('sendno', $body);
         $this->assertArrayHasKey('msg_id', $body);
         sleep(10);
+
         return $body['msg_id'];
     }
-    public function testPusher1() {
-        $payload = $this->payload;
+
+    public function testPusher1()
+    {
+        $payload  = $this->payload;
         $response = $payload->send();
         $this->assertEquals('200', $response['http_code']);
         sleep(10);
+
         return $response['body']['msg_id'];
     }
 
@@ -37,7 +35,8 @@ class ReportPayloadTest extends \PHPUnit_Framework_TestCase {
      * @depends testPusher0
      * @depends testPusher1
      */
-    public function testGetReceived($msg_id_0, $msg_id_1) {
+    public function testGetReceived($msg_id_0, $msg_id_1)
+    {
         $response = $this->reporter->getReceived($msg_id_0);
         $this->assertEquals('200', $response['http_code']);
         $body = $response['body'];
@@ -57,7 +56,8 @@ class ReportPayloadTest extends \PHPUnit_Framework_TestCase {
      * @depends testPusher0
      * @depends testPusher1
      */
-    public function testGetMessages($msg_id_0, $msg_id_1) {
+    public function testGetMessages($msg_id_0, $msg_id_1)
+    {
         $response = $this->reporter->getMessages($msg_id_0);
         $this->assertEquals('200', $response['http_code']);
         $body = $response['body'];
@@ -72,5 +72,15 @@ class ReportPayloadTest extends \PHPUnit_Framework_TestCase {
         $body = $response['body'];
         $this->assertTrue(is_array($body));
         $this->assertEquals(2, count($body));
+    }
+
+    protected function setUp()
+    {
+        global $client;
+        $this->payload  = $client->push()
+                                 ->setPlatform('all')
+                                 ->addAllAudience()
+                                 ->setNotificationAlert('Hello JPush');
+        $this->reporter = $client->report();
     }
 }

@@ -1,15 +1,12 @@
 <?php
+
 namespace JPush\Tests;
 
-class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
+class DevicePayloadTest extends \PHPUnit_Framework_TestCase
+{
 
-    protected function setUp() {
-        global $client;
-        $this->device = $client->device();
-        $this->test_tag = 'jpush_tag';
-    }
-
-    function testGetDevices() {
+    function testGetDevices()
+    {
         global $registration_id;
         $response = $this->device->getDevices($registration_id);
         $this->assertEquals('200', $response['http_code']);
@@ -30,20 +27,22 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \JPush\Exceptions\APIRequestException
      * @expectedExceptionCode 7002
      */
-    function testGetDevicesWithInvalidRid() {
+    function testGetDevicesWithInvalidRid()
+    {
         $response = $this->device->getDevices('INVALID_REGISTRATION_ID');
     }
 
-    function testUpdateDevicesAlias() {
+    function testUpdateDevicesAlias()
+    {
         global $registration_id;
-        $result = $this->device->getDevices($registration_id);
+        $result    = $this->device->getDevices($registration_id);
         $old_alias = $result['body']['alias'];
         if ($old_alias == null) {
             $old_alias = '';
         }
         $new_alias = 'jpush_alias';
         if ($old_alias == $new_alias) {
-            $new_alias = $new_alias . time();
+            $new_alias = $new_alias.time();
         }
         $response = $this->device->updateAlias($registration_id, $new_alias);
         $this->assertEquals('200', $response['http_code']);
@@ -52,7 +51,8 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('200', $response['http_code']);
     }
 
-    function testUpdateDevicesTags() {
+    function testUpdateDevicesTags()
+    {
         global $registration_id;
         $new_tag = $this->test_tag;
 
@@ -63,7 +63,8 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('200', $response['http_code']);
     }
 
-    function testGetTags() {
+    function testGetTags()
+    {
         $response = $this->device->getTags();
         $this->assertEquals('200', $response['http_code']);
 
@@ -73,7 +74,8 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey('tags', $body);
     }
 
-    function testIsDeviceInTag() {
+    function testIsDeviceInTag()
+    {
         global $registration_id;
         $test_tag = $this->test_tag;
 
@@ -92,7 +94,8 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertFalse($body['result']);
     }
 
-    function testUpdateTag() {
+    function testUpdateTag()
+    {
         global $registration_id;
         $test_tag = $this->test_tag;
 
@@ -103,9 +106,12 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('200', $response['http_code']);
     }
 
-    function testDeleteTag() {}
+    function testDeleteTag()
+    {
+    }
 
-    function testGetAliasDevices() {
+    function testGetAliasDevices()
+    {
         $test_tag = $this->test_tag;
 
         $response = $this->device->getAliasDevices($test_tag);
@@ -116,15 +122,25 @@ class DevicePayloadTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey('registration_ids', $body);
     }
 
-    function testDeleteAlias() {}
+    function testDeleteAlias()
+    {
+    }
 
-    function testGetDevicesStatus() {
+    function testGetDevicesStatus()
+    {
         global $registration_id;
         $response = $this->device->getDevicesStatus($registration_id);
         $this->assertEquals('200', $response['http_code']);
         $body = $response['body'];
         $this->assertTrue(is_array($body));
         $this->assertEquals(1, count($body));
+    }
+
+    protected function setUp()
+    {
+        global $client;
+        $this->device   = $client->device();
+        $this->test_tag = 'jpush_tag';
     }
 
 }

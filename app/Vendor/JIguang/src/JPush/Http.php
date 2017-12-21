@@ -1,29 +1,23 @@
 <?php
+
 namespace JPush;
+
 use JPush\Exceptions\APIConnectionException;
 use JPush\Exceptions\APIRequestException;
 
-final class Http {
+final class Http
+{
 
-    public static function get($client, $url) {
-        $response = self::sendRequest($client, $url, Config::HTTP_GET, $body=null);
-        return self::processResp($response);
-    }
-    public static function post($client, $url, $body) {
-        $response = self::sendRequest($client, $url, Config::HTTP_POST, $body);
-        return self::processResp($response);
-    }
-    public static function put($client, $url, $body) {
-        $response = self::sendRequest($client, $url, Config::HTTP_PUT, $body);
-        return self::processResp($response);
-    }
-    public static function delete($client, $url) {
-        $response = self::sendRequest($client, $url, Config::HTTP_DELETE, $body=null);
+    public static function get($client, $url)
+    {
+        $response = self::sendRequest($client, $url, Config::HTTP_GET, $body = null);
+
         return self::processResp($response);
     }
 
-    private static function sendRequest($client, $url, $method, $body=null, $times=1) {
-        self::log($client, "Send " . $method . " " . $url . ", body:" . json_encode($body) . ", times:" . $times);
+    private static function sendRequest($client, $url, $method, $body = null, $times = 1)
+    {
+        self::log($client, "Send ".$method." ".$url.", body:".json_encode($body).", times:".$times);
         if (!defined('CURL_HTTP_VERSION_2_0')) {
             define('CURL_HTTP_VERSION_2_0', 3);
         }
@@ -59,8 +53,8 @@ final class Http {
             'Connection: Keep-Alive'
         ));
 
-        $output = curl_exec($ch);
-        $response = array();
+        $output    = curl_exec($ch);
+        $response  = array();
         $errorCode = curl_errno($ch);
 
         // $msg = '';
@@ -73,7 +67,7 @@ final class Http {
         $msg = '';
         if (isset($body['options']['sendno'])) {
             $sendno = $body['options']['sendno'];
-            $msg = 'sendno: ' . $sendno;
+            $msg    = 'sendno: '.$sendno;
         }
 
 
@@ -83,20 +77,20 @@ final class Http {
                 return self::sendRequest($client, $url, $method, $body, ++$times);
             } else {
                 if ($errorCode === 28) {
-                    throw new APIConnectionException($msg . "Response timeout. Your request has probably be received by JPush Server,please check that whether need to be pushed again." );
+                    throw new APIConnectionException($msg."Response timeout. Your request has probably be received by JPush Server,please check that whether need to be pushed again.");
                 } elseif ($errorCode === 56) {
-                // resolve error[56 Problem (2) in the Chunked-Encoded data]
-                    throw new APIConnectionException($msg . "Response timeout, maybe cause by old CURL version. Your request has probably be received by JPush Server, please check that whether need to be pushed again.");
+                    // resolve error[56 Problem (2) in the Chunked-Encoded data]
+                    throw new APIConnectionException($msg."Response timeout, maybe cause by old CURL version. Your request has probably be received by JPush Server, please check that whether need to be pushed again.");
                 } else {
-                    throw new APIConnectionException("$msg . Connect timeout. Please retry later. Error:" . $errorCode . " " . curl_error($ch));
+                    throw new APIConnectionException("$msg . Connect timeout. Please retry later. Error:".$errorCode." ".curl_error($ch));
                 }
             }
         } else {
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
             $header_text = substr($output, 0, $header_size);
-            $body = substr($output, $header_size);
-            $headers = array();
+            $body        = substr($output, $header_size);
+            $headers     = array();
             foreach (explode("\r\n", $header_text) as $i => $line) {
                 if (!empty($line)) {
                     if ($i === 0) {
@@ -107,33 +101,58 @@ final class Http {
                     }
                 }
             }
-            $response['headers'] = $headers;
-            $response['body'] = $body;
+            $response['headers']   = $headers;
+            $response['body']      = $body;
             $response['http_code'] = $httpCode;
         }
         curl_close($ch);
+
         return $response;
     }
 
-    public static function processResp($response) {
+    public static function log($client, $content)
+    {
+        if (!is_null($client->getLogFile())) {
+            error_log($content."\r\n", 3, $client->getLogFile());
+        }
+    }
+
+    public static function processResp($response)
+    {
         $data = json_decode($response['body'], true);
 
         if (is_null($data)) {
             throw new ServiceNotAvaliable($response);
         } elseif ($response['http_code'] === 200) {
-            $result = array();
-            $result['body'] = $data;
+            $result              = array();
+            $result['body']      = $data;
             $result['http_code'] = $response['http_code'];
-            $result['headers'] = $response['headers'];
+            $result['headers']   = $response['headers'];
+
             return $result;
         } else {
             throw new APIRequestException($response);
         }
     }
 
-    public static function log($client, $content) {
-        if (!is_null($client->getLogFile())) {
-            error_log($content . "\r\n", 3, $client->getLogFile());
-        }
+    public static function post($client, $url, $body)
+    {
+        $response = self::sendRequest($client, $url, Config::HTTP_POST, $body);
+
+        return self::processResp($response);
+    }
+
+    public static function put($client, $url, $body)
+    {
+        $response = self::sendRequest($client, $url, Config::HTTP_PUT, $body);
+
+        return self::processResp($response);
+    }
+
+    public static function delete($client, $url)
+    {
+        $response = self::sendRequest($client, $url, Config::HTTP_DELETE, $body = null);
+
+        return self::processResp($response);
     }
 }
